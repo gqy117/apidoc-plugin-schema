@@ -116,6 +116,9 @@ function isRequired(schema, key) {
 	return schema;
 }*/
 
+function clone(a) {
+   return JSON.parse(JSON.stringify(a));
+}
 
 function traverse(schema, p) {
 	var params = {};
@@ -153,9 +156,26 @@ function traverse(schema, p) {
 		var allowedValues = makeAllowedValues(param);
 		
 		var description = param.description;
+
 		if (param.type === 'array') {
 			description += ' '+param.items.description;
 		}
+
+		// find addtional properties
+		var jsonSchemaStandardProperties = ['required', 'properties', 'type', 'ObjectType', 'objectType','$schema', '$ref', 'id', 'description', 'definitions', 'items', 'oneOf', 'enum', 'default', 'format', 'minimum', 'maximum'];
+		var otherProperties = clone(param);
+		Object.keys(otherProperties).forEach(function(key) {
+			if(jsonSchemaStandardProperties.indexOf(key) >= 0){
+				delete otherProperties[key];
+			}
+		});
+
+		// add addtional properties to the desciption
+		if(Object.keys(otherProperties).length > 0){
+			description += "|" + JSON.stringify(otherProperties);
+			console.log(description);
+		}
+		
 		
 		// make field
 		var field = key;

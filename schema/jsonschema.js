@@ -173,7 +173,7 @@ function traverse(schema, p) {
 		// add addtional properties to the desciption
 		if(Object.keys(otherProperties).length > 0){
 			description += "|" + JSON.stringify(otherProperties);
-			console.log(description);
+			// console.log(description);
 		}
 		
 		
